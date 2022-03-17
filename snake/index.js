@@ -20,7 +20,10 @@ $(document).ready(function(){
 	var SQUARE_SIZE = $("#apple").width();  // the size of the apple is the same size as all squares
   var ROWS = BOARD_WIDTH / SQUARE_SIZE;
   var COLUMNS = BOARD_HEIGHT / SQUARE_SIZE;
-
+  var canLeft = false;
+  var canRight = true;
+  var canUp = true;
+  var canDown = true;
   
   // Game Item Objects
   
@@ -66,30 +69,37 @@ $(document).ready(function(){
     checkBoundaries(snakeHead);
     drawObject(apple);
     snakeEatApple();
+    checkSelf();
   }
   
   /* 
   Called in response to events.
   */
   function handleKeyDown(event) {
-  	if (event.which === KEY.LEFT){
+    if (event.which == KEY.LEFT) {
+      if (snakeHead.speedX == 0 && canLeft) {
         snakeHead.speedY = 0;
         snakeHead.speedX = -20;
-      
-  	}
+      }
+    }
   	if (event.which === KEY.RIGHT){
+      if (snakeHead.speedX == 0 && canRight) {
         snakeHead.speedY = 0;
         snakeHead.speedX = 20;
-      
+      }
 	  }
     if (event.which === KEY.UP){
+      if (snakeHead.speedY == 0 && canUp) {
         snakeHead.speedY = -20;
         snakeHead.speedX = 0;
+      }
      
     }
     if (event.which === KEY.DOWN){
+      if (snakeHead.speedY == 0 && canDown) {
         snakeHead.speedY = 20;
         snakeHead.speedX = 0;
+      }
      
 	  }
   }
@@ -114,6 +124,12 @@ $(document).ready(function(){
    
  }
 
+ function checkSelf() {
+  snakeHead.x > snakeHead.prevX ? canLeft = false : canLeft = true;
+  snakeHead.x < snakeHead.prevX ? canRight = false : canRight = true;
+  snakeHead.y > snakeHead.prevY ? canUp = false : canUp = true;
+  snakeHead.y < snakeHead.prevY ? canDown = false : canDown = true;
+}
 
  function drawObject(object) {
    $(object.id).css("left", object.x);
